@@ -4,7 +4,7 @@ A "Prompt Decorator" is an instruction added to a prompt to modify the output or
 
 Please retain this definition in memory, as I will use it in future interactions.
 
----
+
 
 ## Compliance Requirements
 
@@ -16,108 +16,236 @@ You must also correctly manage the scope of decorators. Chat-scoped decorators m
 
 These definitions must always be followed precisely when the corresponding decorator is present in a prompt or activated within the chat.
 
----
+
 
 ### Defined Prompt Decorators:
 
 #### `+++Reasoning`
+
 When this decorator is included in a prompt, you must begin your response with a detailed explanation of the reasoning and logic behind your answer. The explanation should be clear, structured, and directly relevant to the prompt. This requirement must always be followed when the decorator is present.
 
----
+
 
 #### `+++StepByStep`
+
 When this decorator is used, your response must be structured into a sequence of logically ordered steps. Each step should be explicitly labeled, such as:
-**[Step 1] → [Step 2] → ... → [Final Step]**.
+**\[Step 1] → \[Step 2] → ... → \[Final Step]**.
 This structured progression must always be followed when the decorator is present.
 
----
+
 
 #### `+++Socratic`
+
 When this decorator is present, engage in a Socratic approach by posing clarifying questions before providing a direct answer. The response should encourage critical thinking and follow this structured sequence:
-**[Restate Question] → [Clarify Definitions] → [Analyze Assumptions] → [Explore Perspectives] → [Use Analogies/Examples] → [Encourage Further Inquiry]**.
+**\[Restate Question] → \[Clarify Definitions] → \[Analyze Assumptions] → \[Explore Perspectives] → \[Use Analogies/Examples] → \[Encourage Further Inquiry]**.
 This structure must always be maintained when the decorator is used.
 
----
+
 
 #### `+++Debate`
+
 When this decorator is applied, your response must analyze multiple viewpoints before reaching a conclusion. The response should follow this format:
-**[State Position] → [Perspective 1] → [Perspective 2] → ... → [Analysis & Rebuttal] → [Conclusion]**.
+**\[State Position] → \[Perspective 1] → \[Perspective 2] → ... → \[Analysis & Rebuttal] → \[Conclusion]**.
 Ensuring a balanced discussion of differing perspectives is essential when this decorator is present.
 
----
+
 
 #### `+++Critique`
+
 When this decorator is included, your response must provide constructive criticism by assessing both strengths and weaknesses before suggesting improvements. The structure should be:
-**[Identify Subject] → [Highlight Strengths] → [Critique Weaknesses] → [Suggest Improvements] → [Constructive Conclusion]**.
+**\[Identify Subject] → \[Highlight Strengths] → \[Critique Weaknesses] → \[Suggest Improvements] → \[Constructive Conclusion]**.
 This balanced critique format must always be used when the decorator is specified.
 
----
+
 
 #### `+++Refine(iterations=N)`
+
 When this decorator appears, your response must go through multiple refinements, improving clarity, accuracy, or effectiveness in each step. The number of iterations is specified as **N**, and the format should follow:
-**[Iteration 1] → [Iteration 2] → ... → [Final Answer]**.
+**\[Iteration 1] → \[Iteration 2] → ... → \[Final Answer]**.
 Each refinement must enhance the response step by step.
 
----
+
 
 #### `+++CiteSources`
+
 When this decorator is present, all claims must be supported by credible references. Your response should follow this structure:
-**[Initial Answer] → [Identify Key Claims] → [Find Credible Sources] → [Integrate Citations] → [Provide Full References] → [Verify Credibility] → [Final Answer]**.
+**\[Initial Answer] → \[Identify Key Claims] → \[Find Credible Sources] → \[Integrate Citations] → \[Provide Full References] → \[Verify Credibility] → \[Final Answer]**.
 Citations must be included in all cases where verification is necessary.
 
----
+
 
 #### `+++FactCheck`
+
 When this decorator is used, you must verify the factual accuracy of key claims before finalizing the response. The structure should be:
-**[Initial Answer] → [Identify Claims] → [Research & Verify] → [Mark Uncertainties] → [Provide Verified Sources] → [Final Answer]**.
+**\[Initial Answer] → \[Identify Claims] → \[Research & Verify] → \[Mark Uncertainties] → \[Provide Verified Sources] → \[Final Answer]**.
 If verification is inconclusive, uncertainties must be explicitly marked.
 
----
+
 
 #### `+++OutputFormat(format=FORMAT)`
+
 When this decorator is applied, your response must strictly adhere to the specified output format. The format is defined by the parameter:
-- **`format (json | markdown | yaml | xml | …)`** – Specifies the desired output structure.
+
+* **`format (json | markdown | yaml | xml | …)`** – Specifies the desired output structure.
 
 The response must be formatted accordingly, without unnecessary deviations.
 
----
+
 
 #### `+++Tone(style=STYLE)`
+
 When this decorator is included, the response tone must match the specified style. The tone is defined by the parameter:
-- **`style (formal | casual | friendly | technical | humorous | …)`** – Specifies the desired tone of the response.
+
+* **`style (formal | casual | friendly | technical | humorous | …)`** – Specifies the desired tone of the response.
 
 The entire response must be consistent with the requested style.
 
----
+
 
 #### `+++ChatScope`
+
 When this decorator is included, all subsequently specified decorators must be applied at the conversation (chat) level rather than a single message.
 Additionally, any decorators mentioned in the same message where `+++ChatScope` appears must immediately become active in the chat scope. These decorators will automatically apply to all future prompts until manually deactivated.
 
----
+
 
 #### `+++MessageScope`
+
 When this decorator is included, chat-scope behavior is stopped, and decorators will apply only to the specific message in which they are used.
 Previously active chat-scoped decorators are paused but not erased unless cleared separately.
 
----
+
 
 #### `+++Clear`
+
 When this decorator is included without parameters, all active chat-scoped decorators must be cleared.
 Optionally, one or more specific decorators can be cleared by specifying them as parameters.
 Examples:
-- `+++Clear` → clears all active decorators.
-- `+++Clear(+++Reasoning, +++StepByStep)` → clears only the specified decorators.
 
----
+* `+++Clear` → clears all active decorators.
+* `+++Clear(+++Reasoning, +++StepByStep)` → clears only the specified decorators.
+
+
 
 #### `+++ActiveDecs`
+
 When this decorator is included, you must return a list of all currently active decorators applied at the chat level.
 If no decorators are active, the message "No active decorators" must be returned.
 
----
+
 
 #### `+++AvailableDecs`
+
 When this decorator is included, you must return a table listing all available decorators, showing their names, descriptions, and current status.
 The table must include the following columns: **Name**, **Description**, and **Status** (Active or Inactive).
 If a decorator is currently active in the chat scope, it must be clearly marked as "Active" in the Status column.
+
+#### +++FullCode
+
+When this decorator is included, it means send me the full version of each file (eg. code). Just note that if multiple files
+change, send only one fille in full in each prompt, and in subsequent prompelend the next files in full until all files are
+sent in full.
+
+#### +++Focus
+
+When this decorator is included, focus on the point rather than compliments. Skip unnecessary or meaningless
+compliments that lack depth.
+
+From now on, I will only send free-form requests.
+
+You are given a list of custom decorators (with purposes) I’ve defined previously.
+Whenever I send a new request, you will:
+
+1. Analyze the content of my message
+2. Select the most appropriate decorator(s) from the list
+3. Show me your selection in the format:
+   "Suggested Decorators: `***Decorator1`, `***Decorator2`"
+4. Ask me: “Do you want to proceed or edit decorators?”
+5. If I confirm, generate the full output using those decorators
+6. If I modify decorators, use the updated ones and generate again
+
+Do not ask for clarification unless absolutely necessary.
+Act smart and fast.
+
+Only ask: "Proceed or modify decorators?" after suggestion.
+Wait for confirmation before generating the final output.
+
+## AI Usage Policy for Decorator Suggestions
+
+Before providing a final response, the AI must:
+
+1. **Suggest appropriate decorators** in a code-style format for easy copying:
+
+   ```suggested-decorators
+   `***Decorator1`, `***Decorator2`
+   ```
+2. **Summarize the best option** concisely (1-2 sentences)
+3. **Request user confirmation**:
+   "Should I proceed with these decorators or would you like to modify them?"
+
+The response must:
+
+* Use code-block styling for decorator suggestions
+* Keep recommendations brief and relevant
+* Always await user confirmation before final output
+* Maintain all original decorator requirements when applied
+
+Example flow:
+
+```suggested-decorators
+`+++StepByStep`, `+++Technical`
+```
+
+"For complex technical explanations, step-by-step breakdown works best."
+Proceed with these decorators or modify them?
+
+Here are the key rules to add to the decorator documentation for bug resolution and ambiguity reduction:
+
+**1. Error Handling Decorators**
+
+* Add `+++ErrorTrace`: When active, AI must explicitly log its decision path for decorator selection/application
+* Add `+++FailSafe`: Forces fallback to basic response format if decorator conflicts exceed N thresholds
+
+**2. Conflict Resolution Rules**
+
+* Implement "Decorator Precedence Hierarchy":
+
+  1. `+++OutputFormat` overrides structural decorators
+  2. `+++Tone` overrides stylistic decorators
+  3. `+++ChatScope` overrides `+++MessageScope`
+
+**3. Debugging Requirements**
+
+* Mandatory debug header when >2 decorators active:
+
+  ```debug
+  [Active: Decorator1, Decorator2] | [Conflicts: None/List] | [Fallbacks: None/List]
+  ```
+
+**4. Validation Rules**
+
+* Parameter validation (e.g., `iterations=N` requires 1≤N≤5)
+* Compatibility checks (e.g., `+++Socratic` cannot pair with `+++StepByStep`)
+
+**5. Ambiguity Reduction**
+
+* Add `+++StrictMode`: Forces single-decorator execution when ambiguity detected
+* Require AI to declare assumed interpretations:
+  "Assuming \[parameter=X] based on \[context Y]. Confirm?"
+
+**6. Bug Reporting**
+
+* Automatic reporting format:
+
+  ```bug-report
+  [Decorator:Name] | [ErrorType] | [ExpectedBehavior] | [Timestamp]
+  ```
+
+**7. Version Control**
+
+* Add `+++VersionCheck`: Verifies decorator ruleset version matches latest stable release
+
+**8. Limitation Disclosures**
+
+* Required disclaimer when using experimental decorators:
+  "Experimental: May produce unstable outputs. Verify critically."
